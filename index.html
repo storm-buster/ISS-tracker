@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISS Tracker</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+#location p {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+button {
+    background-color: #555;
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    margin-top: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #777;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ISS Tracker</h1>
+        <p id="status">Fetching ISS location...</p>
+        <div id="location">
+            <p>Latitude: <span id="latitude">-</span></p>
+            <p>Longitude: <span id="longitude">-</span></p>
+        </div>
+        <button id="refreshButton">Refresh Location</button>
+    </div>
+    <script>
+        function fetchISSLocation() {
+    const status = document.getElementById('status');
+    const latitudeElem = document.getElementById('latitude');
+    const longitudeElem = document.getElementById('longitude');
+
+    fetch('http://api.open-notify.org/iss-now.json')
+        .then(response => response.json())
+        .then(data => {
+            const { latitude, longitude } = data.iss_position;
+            latitudeElem.textContent = latitude;
+            longitudeElem.textContent = longitude;
+            status.textContent = 'Current ISS Location:';
+        })
+        .catch(error => {
+            console.error('Error fetching ISS location:', error);
+            status.textContent = 'Failed to fetch ISS location.';
+        });
+}
+
+
+window.onload = () => {
+    fetchISSLocation();
+    setInterval(fetchISSLocation, 10000); 
+
+    const refreshButton = document.getElementById('refreshButton');
+    refreshButton.addEventListener('click', fetchISSLocation);
+};
+
+    </script>
+</body>
+</html>
